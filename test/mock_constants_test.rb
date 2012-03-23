@@ -1,6 +1,6 @@
 require 'minitest/autorun'
 require 'mocha'
-require 'mock_constants/mock_constants'
+require File.expand_path('../../lib/mock_constants/mock_constants', __FILE__)
 
 describe MockConstants do
   subject{MockConstants.new Kernel}
@@ -59,9 +59,33 @@ describe MockConstants do
     end
     
     it "MockConstants.new.remove(:A) is a shortcut for MockConstants.new.remove([:A])" do
+      mod=Module.new; mod.const_set :A, 1
       subject.expects(:remove_list).with([:A])
-      subject.on(Module.new).remove(:A)
+      subject.on(mod).remove(:A)
     end
   end
   
+  describe "API Error Checking" do
+    it "should not permit you to remove a constant not in the target" do
+      lambda{subject.on(Module.new).remove(:A)}.must_raise ArgumentError
+    end
+    
+    it "should not permit you to add a constant previously removed" do
+      mod = Module.new; mod.const_set :A, 1
+      subject.on(mod).remove(:A)
+      lambda{subject.install(A:1)}.must_raise ArgumentError
+    end
+    
+    it "should not permit you to remove a constant previously added or changed" do
+      mod = Module.new; mod.const_set :A, 1
+      subject.on(mod).install(A:1)
+      lambda{subject.remove(:A)}.must_raise ArgumentError
+    end
+
+    it "should not permit you to add or change a constant previously added or changed" do
+      mod = Module.new
+      subject.on(mod).install(A:1)
+      lambda{subject.install(A:2)}.must_raise ArgumentError
+    end
+  end
 end
