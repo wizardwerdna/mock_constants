@@ -4,6 +4,46 @@ require File.expand_path('../../lib/mock_constants/mock_constants', __FILE__)
 
 describe MockConstants do
   subject{MockConstants.new Kernel}
+
+  describe "when target has a predefined constant" do
+    let(:target){Module.new}
+    before{target.const_set :A, :initial_value}
+
+    it "should modify the target value on #install" do
+      subject.on(target).install(A: :updated_value)
+      target.const_get(:A).must_equal :updated_value
+    end
+
+    it "should restore the target value on #restore" do
+      subject.on(target).install(A:3).restore
+      target.const_get(:A).must_equal :initial_value
+    end
+
+    it "should remove the constant from the target on #remove" do
+      subject.on(target).remove(:A)
+      target.wont_be :const_defined?, :A
+    end
+
+    it "should restore a removed constant and its original value to target on #restore" do
+      subject.on(target).remove(:A).restore
+      target.const_get(:A).must_equal :initial_value
+    end
+  end
+
+  describe "when target does not have a predefined constant" do
+    let(:target){Module.new}
+
+    it "should add the constant and value to the target on install" do
+      subject.on(target).install(A: :new_value)
+      target.const_get(:A).must_equal :new_value
+    end
+
+    it "should remove the constant from the target on restore" do
+      subject.on(target).install(A: :new_value).restore
+      target.wont_be :const_defined?, :A
+    end
+  end
+
   describe "API" do
     
     it "should should default to targetting Object" do
@@ -14,10 +54,11 @@ describe MockConstants do
       subject.target.must_equal Kernel
     end
     
-    it "should respond with self to #on to facilitate chaining" do
-      subject.on(Module).must_equal subject
+    it "should respond with self to #on, #install and #remove to facilitate chaining" do
+      subject.on(Module.new).must_equal subject
+      subject.on(Module.new).install.must_equal subject
     end
-    
+  
     it "should permit changing a target after creation" do
       subject.on(Module).target.must_equal Module
     end
@@ -42,7 +83,8 @@ describe MockConstants do
       subject.expects(:remove).with(removal_list)
       subject.expects(:restore)
       lambda{subject.with(constants_spec, removal_list, &proc)}.must_raise RuntimeError
-    end    
+    end
+
   end
   
   describe "API shortcuts" do
