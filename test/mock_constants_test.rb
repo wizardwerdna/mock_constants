@@ -6,6 +6,7 @@ describe MockConstants do
   subject{MockConstants.new Kernel}
 
   describe "when target has a predefined constant" do
+
     let(:target){Module.new}
     before{target.const_set :A, :initial_value}
 
@@ -31,6 +32,7 @@ describe MockConstants do
   end
 
   describe "when target does not have a predefined constant" do
+
     let(:target){Module.new}
 
     it "should add the constant and value to the target on install" do
@@ -46,7 +48,7 @@ describe MockConstants do
 
   describe "API" do
     
-    it "should should default to targetting Object" do
+    it "should should default to targeting Object" do
       MockConstants.new.target.must_equal Object
     end
     
@@ -63,7 +65,7 @@ describe MockConstants do
       subject.on(Module).target.must_equal Module
     end
     
-    it "#with should wrap install, remove and restore with a single operation, and return the value of the block" do
+    it "#with should return result of a proc, wrapping it in install, remove and then restore" do
       constants_spec = stub
       removal_list = stub
       return_stub = stub
@@ -74,7 +76,7 @@ describe MockConstants do
       subject.with(constants_spec, removal_list, &proc).must_equal return_stub
     end
     
-    it "#with should wrap with install, remove and restore even when proc raises an error" do
+    it "#with should wrap a block given with install, remove and restore even when proc raises an error" do
       constants_spec = stub
       removal_list = stub
       return_stub = stub
@@ -85,6 +87,14 @@ describe MockConstants do
       lambda{subject.with(constants_spec, removal_list, &proc)}.must_raise RuntimeError
     end
 
+    it "#with should combine install and remove, but not restore with no block given returning self" do
+      constants_spec = stub
+      removal_list = stub
+      subject.expects(:install).with(constants_spec)
+      subject.expects(:remove).with(removal_list)
+      subject.expects(:restore).times(0)
+      subject.with(constants_spec, removal_list).must_equal subject
+    end
   end
   
   describe "API shortcuts" do
