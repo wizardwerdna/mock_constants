@@ -1,7 +1,6 @@
-# MockConstants
+# MockConstants [![Build Status](https://secure.travis-ci.org/wizardwerdna/mock_constants.png)](http://travis-ci.org/wizardwerdna/mock_constants)
 
-Mock Constants for Isolation Testing  "!https://secure.travis-ci.org/travis-ci/travis-ci.png?branch=master!":http://travis-ci.org/wizardwerdna/mock_constants_
-
+Mock Constants for Isolation Testing  
 
 ## Installation
 
