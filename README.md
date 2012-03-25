@@ -1,6 +1,7 @@
 # MockConstants
 
-TODO: Write a gem description
+Mock Constants for Isolation Testing  "!https://secure.travis-ci.org/travis-ci/travis-ci.png?branch=master!":http://travis-ci.org/wizardwerdna/mock_constants_
+
 
 ## Installation
 
@@ -18,7 +19,7 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+Blistering fast tests of framework software is possible when portions of code can be tested in isolation of the framework.  However, tests often require "mocking" constants from the framework, such as "ActiveRecord" which creates problems when the fast tests are joined of a suite including full framework testing.  This Gem facilitates the installation and removal of constants for isolation tests.
 
 ## Contributing
 
