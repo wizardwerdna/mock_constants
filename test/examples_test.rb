@@ -2,8 +2,8 @@ require 'minitest/autorun'
 require 'mocha'
 require File.expand_path('../../lib/mock_constants/mock_constants', __FILE__)
 
-describe MockConstants do
-  subject{MockConstants.new}
+describe MockConstants::MockConstants do
+  subject{MockConstants::MockConstants.new}
   let(:target){Module.new}
   before do
     target.const_set :A, :initialA

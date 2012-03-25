@@ -3,7 +3,7 @@ require 'mocha'
 require File.expand_path('../../lib/mock_constants/mock_constants', __FILE__)
 
 describe MockConstants do
-  subject{MockConstants.new Kernel}
+  subject{MockConstants::MockConstants.new Kernel}
 
   describe "when target has a predefined constant" do
 
@@ -49,7 +49,7 @@ describe MockConstants do
   describe "API" do
     
     it "should should default to targeting Object" do
-      MockConstants.new.target.must_equal Object
+      MockConstants::MockConstants.new.target.must_equal Object
     end
     
     it "should permit defining a target on creation" do
@@ -100,14 +100,14 @@ describe MockConstants do
   describe "API shortcuts" do
     it "MockConstants.on(...) is a shortcut for MockConstants.new.on(...)" do
       subject.expects(:on)
-      MockConstants.expects(:new).returns(subject)
-      MockConstants.on(Kernel)
+      MockConstants::MockConstants.expects(:new).returns(subject)
+      MockConstants::MockConstants.on(Kernel)
     end
     
     it "MockConstants.with(...) is a shortcut for MockConstants.new.with(...)" do
       subject.expects(:with)
-      MockConstants.expects(:new).returns(subject)
-      MockConstants.with({},[]){}
+      MockConstants::MockConstants.expects(:new).returns(subject)
+      MockConstants::MockConstants.with({},[]){}
     end
     
     it "MockConstants.new.remove(:A) is a shortcut for MockConstants.new.remove([:A])" do
