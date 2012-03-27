@@ -18,11 +18,11 @@ Or install it yourself as:
 
 ## Usage
 
-Blistering fast tests of framework software is possible when portions of code can be tested in isolation of the framework.  
+Blistering fast tests of framework software is possible when portions of code can be tested in isolation of frameworks, such as Rails, and other dependencies.  Advocates such as Gary Bernhard, Corey Haines and others have convinced me of the virtues of this approach, and the sheer joy and productivity of TDD when test results appear almost as soon as you hit the key to initiate them.
 
-However, tests often require "mocking" constants from the framework, such as "ActiveRecord" which creates problems when the fast tests are joined of a suite including full framework testing.  This Gem facilitates the installation and removal of constants for isolation tests.
+However, isolation testing may require some doubles, creation or modification of the values for global constants from the framework or dependency, such as "ActiveRecord," and its progeny.  This can create problems when fast tests are joined as part of a test suite including tests requiring full framework testing.  
 
-For example, consider the following minitest spec:
+This Gem facilitates the installation, modification and removal of constants for isolation tests.  For example, consider the following minitest spec:
 
     describe PasswordResetService do
       subject{PasswordResetService.new}
@@ -33,9 +33,9 @@ For example, consider the following minitest spec:
       end
     end
 
-Of course, we could simply load Rails and let it go.  Unfortunately, loading the framework is costly and unnecessary, since the test does not require any knowledge of `UserMailer`, apart from its notify_user protocol, or `User`, beyond it being a parameter to notify_user.
+Of course, we could simply require Rails and let it go.  Unfortunately, loading and initializing the entire framework is costly and unnecessary (often by a factor of 40 or more!).  Because the test does not require any knowledge of `UserMailer`, apart from its notify_user protocol, or `User`, beyond it being a parameter to notify_user, this is a waste of resources, particularly the psyche of the programmer.
 
-We might run the test in isolation, stubbing UserMailer and User with empty class definitions.  The difficulty is that the definition must be carefully defined to avoid conflicts when run in a suite with tests that require the presence of Rails.  Even so, the mere leaking of any definition of UserMailer can interfere with the proper autoloading behavior.
+We might run the test in isolation, stubbing UserMailer and User with empty class definitions, such as: `Class User; end`  The difficulty is that the definition must be carefully defined to avoid conflicts when run in a suite with tests that require a full framework load.  Even so, the mere leaking of any definition of UserMailer can interfere with the proper autoloading behavior.  Despite Bernhards compelling arguments for this solution as simpler and less invasive, I have not been able to make them work for the autoloaded portions of Rails.
 
 We might finesse all of this with the more rational dependency injection solutions.  (See _____ video at destroyallsoftware.com.)  However, many rails users might not be drawn to changing the models as an improvement in design, perceiving the only benefit to be somewhat faster tests.
 
