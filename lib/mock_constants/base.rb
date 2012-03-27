@@ -1,5 +1,5 @@
 module MockConstants
-  class MockConstants
+  class Base
     attr_reader :target
 
     class << self  
